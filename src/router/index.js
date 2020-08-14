@@ -5,49 +5,83 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "index",
     meta: {
-      title: "首页"
+      title: "域控管理",
+      auth:true
     },
-    component: () => import('../views/layout'),
-    children: [
+    redirect:'login',
+    component:()=>import('@/views/layout'),
+    children:[
+        // 系统设置
       {
-        path: "/home",
-        name: "home",
-        meta: {
-          title: "home"
-        },
-        component: () => import('../views/home'),
+        path:"/admin",
+        name:'admin',
+        component:()=>import('@/views/system'),
+        children:[
+            // 用户管理
+          {
+            path:'user',
+            name:'user',
+            meta:{
+              openPath:'',
+              activePath:'/admin/user',
+              activeName:'系统管理',
+              title:'用户管理'
+            },
+            component:()=>import('@/views/system/user')
+          },
+          {
+            path:'user/permission',
+            name:'userPermission',
+            meta:{
+              openPath:'',
+              activePath:'/admin/user',
+              activeName:'系统管理',
+              title:'用户权限'
+            },
+            component:()=>import('@/views/system/user/userPermission')
+          },
+        ]
       },
-      {
-        path:"/userRole",
-        name:"userRole",
-        component:()=>import('../views/admin/userRole'),
-        meta: {
-          title:"userRole"
-        }
-      }
-    ],
-    redirect: "/home"
+    ]
   },
   {
-    path:"/login",
-    name:"login",
-    component:()=> import('../views/login'),
+    path:'/login',
+    name:'login',
     meta:{
-      title:"登录"
-    }
+      title:'登录'
+    },
+    component:()=>import('@/views/login')
   },
   {
-    path: "/",
-    redirect: "/home"
+    path:'*',
+    redirect:'/404'
   }
 ];
 
+
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
   routes
+});
+
+import { LoadingBar } from '../utils/loadingBar';
+router.beforeEach((to,from,next) => {
+  let userName = localStorage.getItem('userName');
+  LoadingBar.start();
+  if(to.matched.some( m => m.meta.auth)){
+    if(userName) {
+      next();
+    }else{
+      next({path:'/login',query:{ redirect: to.fullPath} });
+    }
+  }else{
+    next();
+  }
+});
+
+router.afterEach(route => {
+  LoadingBar.finish();
 });
 
 export default router;
