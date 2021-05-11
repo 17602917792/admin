@@ -148,7 +148,7 @@
         width: 200px;
         .fs(24px,#fff);
         padding-left: 70px;
-        background: url("../../assets/images/logo_w.png") no-repeat 30px center;
+        background: url("/assets/images/logo_w.png") no-repeat 30px center;
         background-size: 30px auto;
         height: 64px;
         transition: all .2s ease 0s;

@@ -50,26 +50,40 @@
             handleSubmit(e) {
                 e.preventDefault();
                 this.form.validateFields((err, values) => {
-                    if (!err) {
-                        this.userLogin(values).then(res=>{
-                            if(res.code===0){
-                                let {result:{givenName}} = res;
-                                localStorage.setItem('userName',givenName);
-                                let redirect = decodeURIComponent(this.$route.query.redirect || '/admin/user');
-                                this.$notification['success']({
-                                    message: '登录成功！',
-                                    duration: 1,
-                                });
-                                setTimeout(()=>{
+                    console.log(err,values)
+                    if(!err){
+                        console.log(values)
+                        if(values.accountName=="admin"&&values.password=="admin"){
+                             let redirect = decodeURIComponent(this.$route.query.redirect || '/admin/user');
+                               setTimeout(()=>{
                                     this.$router.push({
-                                        path: redirect
+                                        path:'/admin/user'
                                     });
                                 },1000);
-                            }else{
-                                 this.$util.openNotification(res.message);
-                            }
-                        });
+                        }else{
+                            this.$util.openNotification("登录失败");
+                        }
                     }
+                    // if (!err) {
+                    //     this.userLogin(values).then(res=>{
+                    //         if(res.code===0){
+                    //             let {result:{givenName}} = res;
+                    //             localStorage.setItem('userName',givenName);
+                    //             let redirect = decodeURIComponent(this.$route.query.redirect || '/admin/user');
+                    //             this.$notification['success']({
+                    //                 message: '登录成功！',
+                    //                 duration: 1,
+                    //             });
+                    //             setTimeout(()=>{
+                    //                 this.$router.push({
+                    //                     path: redirect
+                    //                 });
+                    //             },1000);
+                    //         }else{
+                    //              this.$util.openNotification(res.message);
+                    //         }
+                    //     });
+                    // }
                 });
             }
         }
@@ -82,13 +96,13 @@
        width: 100%;
        overflow: hidden;
        padding:12px 36px;
-       background: url("../../assets/images/login_bg.jpg") no-repeat center top;
+       background: url("/assets/images/login_bg.jpg") no-repeat center top;
        background-size: cover;
        .logo{
            display: block;
            width: 239px;
            height: 70px;
-           background: url("../../assets/images/logo_b.png") no-repeat left center;
+           background: url("/assets/images/logo_b.png") no-repeat left center;
        }
    }
 
